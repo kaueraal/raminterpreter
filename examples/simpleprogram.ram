@@ -1,0 +1,22 @@
+// Simple program
+// Sums all numbers until 5 and writes the result into R0
+ 
+// Prepare registers. The first line is not necessary since unset
+// registers are treated as 0.
+R0 = 0
+R1 = 5
+
+LOOP:
+	// Jump to END if R1 is 0
+	GZ R1 END
+
+	// Update registers
+	R0 = R0 + R1
+	R1 = R1 - 1
+	
+	// Jump to the beginning of the loop
+	GOTO LOOP 
+
+END:
+	// Terminate the program
+	HALT

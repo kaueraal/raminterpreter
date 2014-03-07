@@ -1,0 +1,109 @@
+// Sorts the numbers in R1 to R10 using counting sort
+
+R0 = 10 // Number of numbers to sort
+R1 = 1
+R2 = 0
+R3 = 1
+R4 = 1
+R5 = 0
+R6 = 0
+R7 = 1
+R8 = 0
+R9 = 1
+R10 = 0
+
+// Make some space for the counters/variables
+START:
+	R0 = R0 - 3 
+	GLZ R0 HANDLELLESS3
+	R0 = R0 + 3 
+	GOTO PREPARER2
+
+HANDLELLESS3:
+	R0 = R0 + 1 
+	GLZ R0 HANDLELESS2
+	R0 = R0 + 2 
+	R1 = R1 + R2 
+	GGZ R1 HANDLESETR2ZERO 
+	HALT 
+
+HANDLESETR2ZERO:
+	R2 = 1
+	R1 = R1 - 1
+	HALT 
+
+HANDLELESS2:
+	R0 = R0 + 2
+	// Already sorted
+	HALT
+
+// We have more than 3 numbers - we count 1s in R1
+// Manually count the first 2 numbers
+PREPARER2:
+	GGZ R2 R2ONE 
+	GOTO PREPARER3
+R2ONE:
+	R1 = R1 + 1
+PREPARER3:
+	GGZ R3 R3ONE 
+	GOTO STARTSORT
+R3ONE:
+	R1 = R1 + 1
+
+STARTSORT:
+	// Count the 1s via iterating downwards, using R2 as the
+	// counter and R3 as temp variable
+	R2 = R0 
+COUNTLOOP:
+	R3 = R2 - 3 
+	GZ R3 COUNTEND
+	GGZ (R2) COUNTONE // if current cell is 1 increment counter
+	R2 = R2 - 1 
+	GOTO COUNTLOOP
+COUNTONE:
+	R1 = R1 + 1 
+	R2 = R2 - 1 
+	GOTO COUNTLOOP
+
+// Now we have to write all 1s back in the right position
+COUNTEND:
+	R2 = R0 
+WRITEONESLOOP:
+	R3 = R2 - 3 
+	GZ R3 WRITEONESEND // Abort if we have written 1s until the counter area
+	GZ R1 WRITEONESEND // Abort if we don't have any 1s left to write
+	(R2) = 1 
+	R2 = R2 - 1 
+	R1 = R1 - 1 
+	GOTO WRITEONESLOOP
+WRITEONESEND:
+
+// Now we have to fill the rest with 0s until the index area (until R4 inclusive)
+WRITEZEROSLOOP:
+	R3 = R2 - 3 
+	GZ R3 WRITEZEROSEND // Abort if we have written 0s until the counter area
+	(R2) = 0 
+	R2 = R2 - 1 
+	GOTO WRITEZEROSLOOP
+WRITEZEROSEND:
+
+// Now we have to clean up the counter area - it's a little bit ugly
+	GZ R1 WRITER3ZERO 
+	GOTO WRITER3ONE
+WRITER3ZERO:
+	R3 = 0
+	GOTO WRITER3EEND
+WRITER3ONE:
+	R3 = 1
+	R1 = R1 - 1
+WRITER3EEND:
+	GZ R1 WRITER2ZERO 
+	GOTO WRITER2ONE
+WRITER2ZERO:
+	R2 = 0
+	GOTO WRITER2EEND
+WRITER2ONE:
+	R2 = 1
+	R1 = R1 - 1
+WRITER2EEND:
+	HALT
