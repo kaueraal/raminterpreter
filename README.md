@@ -94,8 +94,8 @@ which can be used as jump targets in
 
 	GOTO LABEL
 	GZ ADDRESS LABEL
-	GGZ ADDRESs LABEL
-	GLZ ADDRESs LABEL
+	GGZ ADDRESS LABEL
+	GLZ ADDRESS LABEL
 
 with `GZ` meaning "`GOTO` if zero", `GGZ` meaning "`GOTO` greater than zero" and `GLZ` meaning "`GOTO` if less then zero". 
 
